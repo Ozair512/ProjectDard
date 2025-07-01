@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('info') }} - Project Dard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-info-circle me-2"></i>{{ get_text('about_platform') }}
+        </h1>
+        
+        <!-- About Section -->
+        <div class="card bg-secondary mb-4">
+            <div class="card-body">
+                <h3>{{ get_text('about_platform') }}</h3>
+                <p class="lead">{{ get_text('platform_description') }}</p>
+                <p>
+                    Project Dard is designed to foster meaningful academic discussions and create a space for 
+                    intellectual exchange. Our platform supports multiple languages and encourages diverse 
+                    perspectives on various topics.
+                </p>
+                <p>
+                    We believe in the power of community-driven content moderation and democratic discourse. 
+                    Through our like/dislike system and appeal process, we maintain a balance between free 
+                    expression and community standards.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Founder Section -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card bg-secondary h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-tie me-2"></i>{{ get_text('founder') }}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="profile-image-placeholder bg-primary rounded-circle mx-auto" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user fa-3x text-white"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h5>Dr. [Founder Name]</h5>
+                                <p class="text-muted">Founder & Visionary</p>
+                                <p>
+                                    [Founder bio would go here. This section would contain information about the 
+                                    founder's background, education, and vision for the platform.]
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Author -->
+            <div class="col-lg-6">
+                <div class="card bg-secondary h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-star me-2"></i>{{ get_text('featured_author') }}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="profile-image-placeholder bg-warning rounded-circle mx-auto" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-pen fa-3x text-white"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h5>[Featured Author Name]</h5>
+                                <p class="text-muted">This Week's Featured Author</p>
+                                <p>
+                                    [Featured author bio would go here. This section would highlight the current 
+                                    week's featured author and their contributions.]
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Section -->
+        <div class="card bg-secondary mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-users me-2"></i>{{ get_text('team') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="profile-image-placeholder bg-info rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <h6>[Team Member 1]</h6>
+                        <p class="text-muted small">Community Manager</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="profile-image-placeholder bg-success rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <h6>[Team Member 2]</h6>
+                        <p class="text-muted small">Content Moderator</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="profile-image-placeholder bg-danger rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <h6>[Team Member 3]</h6>
+                        <p class="text-muted small">Technical Lead</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Platform Features -->
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>Platform Features
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-globe me-2"></i>Multi-language Support</h6>
+                        <p class="small text-muted">Support for English and Persian languages with RTL text support.</p>
+                        
+                        <h6><i class="fas fa-comments me-2"></i>Community Discussions</h6>
+                        <p class="small text-muted">Weekly topics and open discussions with community engagement.</p>
+                        
+                        <h6><i class="fas fa-thumbs-up me-2"></i>Democratic Moderation</h6>
+                        <p class="small text-muted">Community-driven content moderation through likes and dislikes.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-archive me-2"></i>Discussion Archive</h6>
+                        <p class="small text-muted">Complete archive of past discussions with PDF download capability.</p>
+                        
+                        <h6><i class="fas fa-gavel me-2"></i>Appeal Process</h6>
+                        <p class="small text-muted">Fair appeal system for content moderation decisions.</p>
+                        
+                        <h6><i class="fas fa-book me-2"></i>Weekly Stories</h6>
+                        <p class="small text-muted">Featured stories and content from community members.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

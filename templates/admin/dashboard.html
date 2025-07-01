@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('dashboard') }} - Project Dard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-tachometer-alt me-2"></i>{{ get_text('dashboard') }}
+            </h1>
+            <div>
+                <span class="text-muted">Welcome, {{ current_user.username }}!</span>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-comments fa-2x mb-2"></i>
+                        <h3>{{ total_topics }}</h3>
+                        <p class="mb-0">Total Topics</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success">
+                    <div class="card-body text-center">
+                        <i class="fas fa-comment fa-2x mb-2"></i>
+                        <h3>{{ total_comments }}</h3>
+                        <p class="mb-0">Total Comments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning">
+                    <div class="card-body text-center">
+                        <i class="fas fa-eye-slash fa-2x mb-2"></i>
+                        <h3>{{ hidden_comments }}</h3>
+                        <p class="mb-0">Hidden Comments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger">
+                    <div class="card-body text-center">
+                        <i class="fas fa-gavel fa-2x mb-2"></i>
+                        <h3>{{ pending_appeals }}</h3>
+                        <p class="mb-0">Pending Appeals</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-plus me-2"></i>Post New Topic
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if topic_form %}
+                        <form method="POST" action="{{ url_for('admin_post_topic') }}">
+                            {{ topic_form.hidden_tag() }}
+                            
+                            <div class="mb-3">
+                                {{ topic_form.title_en.label(class="form-label") }}
+                                {{ topic_form.title_en(class="form-control bg-dark text-light border-secondary") }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ topic_form.title_fa.label(class="form-label") }}
+                                {{ topic_form.title_fa(class="form-control bg-dark text-light border-secondary", dir="rtl") }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ topic_form.content_en.label(class="form-label") }}
+                                {{ topic_form.content_en(class="form-control bg-dark text-light border-secondary", rows="4") }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ topic_form.content_fa.label(class="form-label") }}
+                                {{ topic_form.content_fa(class="form-control bg-dark text-light border-secondary", rows="4", dir="rtl") }}
+                            </div>
+                            
+                            {{ topic_form.submit(class="btn btn-primary") }}
+                        </form>
+                        {% else %}
+                        <a href="{{ url_for('admin_post_topic') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Create New Topic
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-book me-2"></i>Post New Story
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if story_form %}
+                        <form method="POST" action="{{ url_for('admin_post_story') }}">
+                            {{ story_form.hidden_tag() }}
+                            
+                            <div class="mb-3">
+                                {{ story_form.title_en.label(class="form-label") }}
+                                {{ story_form.title_en(class="form-control bg-dark text-light border-secondary") }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ story_form.title_fa.label(class="form-label") }}
+                                {{ story_form.title_fa(class="form-control bg-dark text-light border-secondary", dir="rtl") }}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ story_form.author_en.label(class="form-label") }}
+                                    {{ story_form.author_en(class="form-control bg-dark text-light border-secondary") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ story_form.author_fa.label(class="form-label") }}
+                                    {{ story_form.author_fa(class="form-control bg-dark text-light border-secondary", dir="rtl") }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ story_form.content_en.label(class="form-label") }}
+                                {{ story_form.content_en(class="form-control bg-dark text-light border-secondary", rows="4") }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ story_form.content_fa.label(class="form-label") }}
+                                {{ story_form.content_fa(class="form-control bg-dark text-light border-secondary", rows="4", dir="rtl") }}
+                            </div>
+                            
+                            {{ story_form.submit(class="btn btn-success") }}
+                        </form>
+                        {% else %}
+                        <a href="{{ url_for('admin_post_story') }}" class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i>Create New Story
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Management Links -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>Management
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="{{ url_for('admin_comments') }}" class="btn btn-outline-warning w-100 mb-2">
+                                    <i class="fas fa-comments me-1"></i>Manage Comments
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{{ url_for('admin_comments', hidden='true') }}" class="btn btn-outline-danger w-100 mb-2">
+                                    <i class="fas fa-eye-slash me-1"></i>Hidden Comments
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{{ url_for('archive') }}" class="btn btn-outline-info w-100 mb-2">
+                                    <i class="fas fa-archive me-1"></i>View Archive
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        {% if recent_comments %}
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>{{ get_text('recent_activity') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                {% for comment in recent_comments %}
+                <div class="d-flex justify-content-between align-items-start border-bottom border-secondary pb-2 mb-2">
+                    <div>
+                        <strong>{{ comment.author_name }}</strong>
+                        <small class="text-muted ms-2">{{ comment.created_at.strftime('%m/%d/%Y %H:%M') }}</small>
+                        {% if comment.is_hidden %}
+                        <span class="badge bg-danger ms-2">Hidden</span>
+                        {% endif %}
+                        <div class="text-truncate mt-1" style="max-width: 400px;">
+                            {{ comment.content | truncate(100) }}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">
+                            <i class="fas fa-thumbs-up me-1"></i>{{ comment.likes }}
+                            <i class="fas fa-thumbs-down ms-2 me-1"></i>{{ comment.dislikes }}
+                        </small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

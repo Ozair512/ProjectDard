@@ -1,0 +1,24 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="20" cy="20" r="18" fill="#007bff" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Book Icon -->
+  <path d="M12 8C12 7.44772 12.4477 7 13 7H27C27.5523 7 28 7.44772 28 8V30C28 30.5523 27.5523 31 27 31H13C12.4477 31 12 30.5523 12 30V8Z" fill="#ffffff"/>
+  <path d="M14 10H26V28H14V10Z" fill="#007bff"/>
+  
+  <!-- Chat Bubble -->
+  <circle cx="30" cy="12" r="6" fill="#ffffff" stroke="#007bff" stroke-width="1"/>
+  <path d="M27 12C27 10.3431 28.3431 9 30 9C31.6569 9 33 10.3431 33 12C33 13.6569 31.6569 15 30 15L28 17V15C27.4477 15 27 14.5523 27 14V12Z" fill="#007bff"/>
+  
+  <!-- Text Lines -->
+  <line x1="16" y1="13" x2="24" y2="13" stroke="#ffffff" stroke-width="1"/>
+  <line x1="16" y1="16" x2="24" y2="16" stroke="#ffffff" stroke-width="1"/>
+  <line x1="16" y1="19" x2="22" y2="19" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="8" cy="28" r="2" fill="#ffc107"/>
+  <circle cx="32" cy="32" r="2" fill="#28a745"/>
+  
+  <!-- Persian/Arabic Calligraphy Style Element -->
+  <path d="M20 22C18 22 16 24 16 26C16 28 18 30 20 30C22 30 24 28 24 26C24 24 22 22 20 22Z" fill="#ffffff" stroke="#007bff" stroke-width="1"/>
+</svg>

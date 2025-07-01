@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('manage_comments') }} - Project Dard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-comments me-2"></i>{{ get_text('manage_comments') }}
+            </h1>
+            <div>
+                <a href="{{ url_for('admin_comments') }}" class="btn btn-outline-primary {% if not show_hidden %}active{% endif %}">
+                    All Comments
+                </a>
+                <a href="{{ url_for('admin_comments', hidden='true') }}" class="btn btn-outline-warning {% if show_hidden %}active{% endif %}">
+                    Hidden Comments
+                </a>
+            </div>
+        </div>
+        
+        <!-- Pending Appeals -->
+        {% if appeals %}
+        <div class="card bg-danger mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-gavel me-2"></i>Pending Appeals ({{ appeals | length }})
+                </h4>
+            </div>
+            <div class="card-body">
+                {% for appeal in appeals %}
+                <div class="border-bottom border-light pb-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>{{ appeal.appellant_name }} ({{ appeal.appellant_email }})</h6>
+                            <p class="mb-1"><strong>Reason:</strong> {{ appeal.reason | truncate(200) }}</p>
+                            <small class="text-muted">
+                                Submitted: {{ appeal.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="btn-group">
+                                <a href="{{ url_for('review_appeal', appeal_id=appeal.id, action='approve') }}" 
+                                   class="btn btn-sm btn-success"
+                                   onclick="return confirm('Approve this appeal and unhide the comment?')">
+                                    <i class="fas fa-check me-1"></i>Approve
+                                </a>
+                                <a href="{{ url_for('review_appeal', appeal_id=appeal.id, action='reject') }}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Reject this appeal?')">
+                                    <i class="fas fa-times me-1"></i>Reject
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Comments List -->
+        {% if comments.items %}
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    Comments ({{ comments.total }})
+                </h4>
+            </div>
+            <div class="card-body">
+                {% for comment in comments.items %}
+                <div class="comment-admin-item border-bottom border-secondary pb-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-start mb-2">
+                                <div>
+                                    <strong>{{ comment.author_name }}</strong>
+                                    {% if comment.author_email %}
+                                    <small class="text-muted">({{ comment.author_email }})</small>
+                                    {% endif %}
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ comment.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                    </small>
+                                    {% if comment.language == 'fa' %}
+                                    <span class="badge bg-info ms-2">فارسی</span>
+                                    {% endif %}
+                                    {% if comment.is_hidden %}
+                                    <span class="badge bg-danger ms-2">Hidden</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="comment-content mb-2" dir="{{ 'rtl' if comment.language == 'fa' else 'ltr' }}">
+                                {{ comment.content | nl2br }}
+                            </div>
+                            
+                            <div class="comment-stats">
+                                <span class="badge bg-success me-2">
+                                    <i class="fas fa-thumbs-up me-1"></i>{{ comment.likes }}
+                                </span>
+                                <span class="badge bg-danger me-2">
+                                    <i class="fas fa-thumbs-down me-1"></i>{{ comment.dislikes }}
+                                </span>
+                                <small class="text-muted">
+                                    Topic: {{ comment.topic.title_en | truncate(50) }}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-end">
+                            <div class="btn-group-vertical">
+                                <a href="{{ url_for('toggle_comment', comment_id=comment.id) }}" 
+                                   class="btn btn-sm {% if comment.is_hidden %}btn-outline-success{% else %}btn-outline-warning{% endif %}"
+                                   onclick="return confirm('{% if comment.is_hidden %}Unhide{% else %}Hide{% endif %} this comment?')">
+                                    <i class="fas fa-{% if comment.is_hidden %}eye{% else %}eye-slash{% endif %} me-1"></i>
+                                    {% if comment.is_hidden %}Unhide{% else %}Hide{% endif %}
+                                </a>
+                                <a href="{{ url_for('delete_comment', comment_id=comment.id) }}" 
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Permanently delete this comment? This action cannot be undone.')">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if comments.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if comments.has_prev %}
+                <li class="page-item">
+                    <a class="page-link bg-dark text-light border-secondary" 
+                       href="{{ url_for('admin_comments', page=comments.prev_num, hidden=show_hidden|string|lower) }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in comments.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != comments.page %}
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-light border-secondary" 
+                               href="{{ url_for('admin_comments', page=page_num, hidden=show_hidden|string|lower) }}">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item active">
+                            <span class="page-link bg-primary border-primary">{{ page_num }}</span>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-dark text-light border-secondary">...</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if comments.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-dark text-light border-secondary" 
+                       href="{{ url_for('admin_comments', page=comments.next_num, hidden=show_hidden|string|lower) }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-comments fa-5x text-muted mb-4"></i>
+            <h3 class="text-muted">No comments found</h3>
+            <p class="text-muted">
+                {% if show_hidden %}
+                No hidden comments at this time.
+                {% else %}
+                No comments have been posted yet.
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

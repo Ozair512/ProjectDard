@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('home') }} - Project Dard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <!-- Weekly Topic -->
+        {% if active_topic %}
+        <div class="card bg-secondary mb-4">
+            <div class="card-header">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-comments me-2"></i>{{ get_text('weekly_topic') }}
+                </h2>
+            </div>
+            <div class="card-body">
+                <h3>{{ active_topic.title_fa if current_language == 'fa' and active_topic.title_fa else active_topic.title_en }}</h3>
+                <div class="mt-3">
+                    {{ (active_topic.content_fa if current_language == 'fa' and active_topic.content_fa else active_topic.content_en) | safe }}
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>
+                    {{ active_topic.created_at.strftime('%B %d, %Y') }}
+                </small>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Comments Section -->
+        <div class="card bg-secondary">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-comments me-2"></i>{{ get_text('comments') }}
+                </h4>
+                {% if comments %}
+                <span class="badge bg-primary">{{ comments.total }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <!-- Comment Form -->
+                {% if active_topic %}
+                <form method="POST" class="mb-4">
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.author_name.label(class="form-label") }}
+                            {{ form.author_name(class="form-control bg-dark text-light border-secondary") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.author_email.label(class="form-label") }}
+                            {{ form.author_email(class="form-control bg-dark text-light border-secondary") }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.language.label(class="form-label") }}
+                        {{ form.language(class="form-select bg-dark text-light border-secondary") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.content.label(class="form-label") }}
+                        {{ form.content(class="form-control bg-dark text-light border-secondary", rows="4", maxlength="700") }}
+                        <div class="form-text">Maximum 700 characters</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-1"></i>{{ get_text('post_comment') }}
+                    </button>
+                </form>
+                {% endif %}
+                
+                <!-- Comments List -->
+                {% if comments and comments.items %}
+                    {% for comment in comments.items %}
+                    <div class="comment-item border-bottom border-secondary pb-3 mb-3" data-comment-id="{{ comment.id }}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong>{{ comment.author_name }}</strong>
+                                <small class="text-muted ms-2">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ comment.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                </small>
+                                {% if comment.language == 'fa' %}
+                                <span class="badge bg-info ms-2">فارسی</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="comment-content mb-2" dir="{{ 'rtl' if comment.language == 'fa' else 'ltr' }}">
+                            {{ comment.content | nl2br }}
+                        </div>
+                        
+                        <div class="comment-actions d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-success me-2 vote-btn" 
+                                    data-comment-id="{{ comment.id }}" 
+                                    data-vote-type="like">
+                                <i class="fas fa-thumbs-up me-1"></i>
+                                <span class="like-count">{{ comment.likes }}</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger vote-btn" 
+                                    data-comment-id="{{ comment.id }}" 
+                                    data-vote-type="dislike">
+                                <i class="fas fa-thumbs-down me-1"></i>
+                                <span class="dislike-count">{{ comment.dislikes }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Pagination -->
+                    {% if comments.pages > 1 %}
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if comments.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('home', page=comments.prev_num) }}">Previous</a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for page_num in comments.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != comments.page %}
+                                    <li class="page-item">
+                                        <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link bg-primary border-primary">{{ page_num }}</span>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-dark text-light border-secondary">...</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if comments.has_next %}
+                            <li class="page-item">
+                                <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('home', page=comments.next_num) }}">Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">{{ get_text('no_comments') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Weekly Story -->
+        {% if active_story %}
+        <div class="card bg-secondary mb-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-book me-2"></i>{{ get_text('weekly_story') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ active_story.title_fa if current_language == 'fa' and active_story.title_fa else active_story.title_en }}</h5>
+                {% if active_story.author_fa if current_language == 'fa' and active_story.author_fa else active_story.author_en %}
+                <p class="text-muted mb-2">
+                    <i class="fas fa-user me-1"></i>
+                    {{ active_story.author_fa if current_language == 'fa' and active_story.author_fa else active_story.author_en }}
+                </p>
+                {% endif %}
+                <div class="story-content">
+                    {{ (active_story.content_fa if current_language == 'fa' and active_story.content_fa else active_story.content_en) | truncate(300) | safe }}
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>
+                    {{ active_story.created_at.strftime('%B %d, %Y') }}
+                </small>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Links -->
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-link me-2"></i>Quick Links
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('archive') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-archive me-1"></i>{{ get_text('archive') }}
+                    </a>
+                    <a href="{{ url_for('info') }}" class="btn btn-outline-info">
+                        <i class="fas fa-info-circle me-1"></i>{{ get_text('info') }}
+                    </a>
+                    <a href="{{ url_for('appeal') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-gavel me-1"></i>{{ get_text('appeal') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

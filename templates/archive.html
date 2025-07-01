@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('archive') }} - Project Dard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-archive me-2"></i>{{ get_text('discussion_archive') }}
+            </h1>
+        </div>
+        
+        {% if topics.items %}
+        <div class="row">
+            {% for topic in topics.items %}
+            <div class="col-md-6 mb-4">
+                <div class="card bg-secondary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ topic.title_fa if current_language == 'fa' and topic.title_fa else topic.title_en }}
+                        </h5>
+                        <div class="card-text mb-3">
+                            {{ (topic.content_fa if current_language == 'fa' and topic.content_fa else topic.content_en) | truncate(150) | safe }}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ topic.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                            <div>
+                                <span class="badge bg-primary me-2">
+                                    <i class="fas fa-comments me-1"></i>{{ topic.comments | length }}
+                                </span>
+                                {% if topic.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('home') }}#topic-{{ topic.id }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i>View Discussion
+                            </a>
+                            <a href="{{ url_for('download_discussion', topic_id=topic.id) }}" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-download me-1"></i>{{ get_text('download_pdf') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if topics.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if topics.has_prev %}
+                <li class="page-item">
+                    <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('archive', page=topics.prev_num) }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in topics.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != topics.page %}
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('archive', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item active">
+                            <span class="page-link bg-primary border-primary">{{ page_num }}</span>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-dark text-light border-secondary">...</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if topics.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-dark text-light border-secondary" href="{{ url_for('archive', page=topics.next_num) }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-archive fa-5x text-muted mb-4"></i>
+            <h3 class="text-muted">{{ get_text('no_topics') }}</h3>
+            <p class="text-muted">Check back later for archived discussions.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
