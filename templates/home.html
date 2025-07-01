@@ -163,10 +163,11 @@
             </div>
             <div class="card-body">
                 <h5>{{ active_story.title_fa if current_language == 'fa' and active_story.title_fa else active_story.title_en }}</h5>
-                {% if active_story.author_fa if current_language == 'fa' and active_story.author_fa else active_story.author_en %}
+                {% set author_name = active_story.author_fa if current_language == 'fa' and active_story.author_fa else active_story.author_en %}
+                {% if author_name %}
                 <p class="text-muted mb-2">
                     <i class="fas fa-user me-1"></i>
-                    {{ active_story.author_fa if current_language == 'fa' and active_story.author_fa else active_story.author_en }}
+                    {{ author_name }}
                 </p>
                 {% endif %}
                 <div class="story-content">

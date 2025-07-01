@@ -38,6 +38,14 @@ def load_user(user_id):
     from models import Admin
     return Admin.query.get(int(user_id))
 
+# Add nl2br filter for templates
+@app.template_filter('nl2br')
+def nl2br_filter(text):
+    """Convert newlines to HTML line breaks"""
+    if text is None:
+        return ''
+    return text.replace('\n', '<br>')
+
 # Import routes after app initialization
 from routes import *
 
