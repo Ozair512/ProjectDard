@@ -61,6 +61,14 @@ def home():
         )
         db.session.add(comment)
         db.session.commit()
+        
+        # Update Excel with latest data
+        try:
+            from excel_manager import excel_manager
+            excel_manager.export_all_data()
+        except Exception as e:
+            print(f"Excel export error: {e}")
+        
         flash(get_text('comment_posted'), 'success')
         return redirect(url_for('home'))
     
@@ -242,12 +250,18 @@ def admin_dashboard():
     
     recent_comments = Comment.query.order_by(Comment.created_at.desc()).limit(5).all()
     
+    # Get current topics and stories for management
+    current_topics = WeeklyTopic.query.order_by(WeeklyTopic.created_at.desc()).limit(5).all()
+    current_stories = WeeklyStory.query.order_by(WeeklyStory.created_at.desc()).limit(5).all()
+    
     return render_template('admin/dashboard.html',
                          total_topics=total_topics,
                          total_comments=total_comments,
                          hidden_comments=hidden_comments,
                          pending_appeals=pending_appeals,
-                         recent_comments=recent_comments)
+                         recent_comments=recent_comments,
+                         current_topics=current_topics,
+                         current_stories=current_stories)
 
 @app.route('/admin/post_topic', methods=['GET', 'POST'])
 @login_required
@@ -269,6 +283,13 @@ def admin_post_topic():
         )
         db.session.add(topic)
         db.session.commit()
+        
+        # Update Excel with latest data
+        try:
+            from excel_manager import excel_manager
+            excel_manager.export_all_data()
+        except Exception as e:
+            print(f"Excel export error: {e}")
         
         flash(get_text('topic_posted'), 'success')
         return redirect(url_for('admin_dashboard'))
@@ -297,6 +318,13 @@ def admin_post_story():
         )
         db.session.add(story)
         db.session.commit()
+        
+        # Update Excel with latest data
+        try:
+            from excel_manager import excel_manager
+            excel_manager.export_all_data()
+        except Exception as e:
+            print(f"Excel export error: {e}")
         
         flash(get_text('story_posted'), 'success')
         return redirect(url_for('admin_dashboard'))
@@ -362,5 +390,76 @@ def review_appeal(appeal_id, action):
     
     db.session.commit()
     
+    # Update Excel with latest data
+    try:
+        from excel_manager import excel_manager
+        excel_manager.export_all_data()
+    except Exception as e:
+        print(f"Excel export error: {e}")
+    
     flash(f'Appeal {action}d successfully', 'success')
     return redirect(url_for('admin_comments'))
+
+@app.route('/admin/topic/<int:topic_id>/delete', methods=['POST'])
+@login_required
+def delete_topic(topic_id):
+    topic = WeeklyTopic.query.get_or_404(topic_id)
+    
+    # Delete all associated comments and their votes/appeals first
+    comments = Comment.query.filter_by(topic_id=topic.id).all()
+    for comment in comments:
+        # Delete votes for this comment
+        CommentVote.query.filter_by(comment_id=comment.id).delete()
+        # Delete appeals for this comment
+        Appeal.query.filter_by(comment_id=comment.id).delete()
+    
+    # Delete all comments for this topic
+    Comment.query.filter_by(topic_id=topic.id).delete()
+    
+    # Delete the topic
+    db.session.delete(topic)
+    db.session.commit()
+    
+    flash('Topic and all associated data deleted successfully!', 'success')
+    
+    # Update Excel with latest data
+    try:
+        from excel_manager import excel_manager
+        excel_manager.export_all_data()
+    except Exception as e:
+        print(f"Excel export error: {e}")
+    
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/story/<int:story_id>/delete', methods=['POST'])
+@login_required
+def delete_story(story_id):
+    story = WeeklyStory.query.get_or_404(story_id)
+    
+    # Delete the story
+    db.session.delete(story)
+    db.session.commit()
+    
+    flash('Story deleted successfully!', 'success')
+    
+    # Update Excel with latest data
+    try:
+        from excel_manager import excel_manager
+        excel_manager.export_all_data()
+    except Exception as e:
+        print(f"Excel export error: {e}")
+    
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/export-excel')
+@login_required
+def export_excel():
+    """Export all data to Excel files"""
+    try:
+        from excel_manager import excel_manager
+        exported_files = excel_manager.export_all_data()
+        flash(f'Excel files exported successfully! {len(exported_files)} files created.', 'success')
+    except Exception as e:
+        flash(f'Error exporting Excel files: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_dashboard'))

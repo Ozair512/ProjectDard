@@ -102,8 +102,10 @@ def generate_project_documentation():
         "Four main pages: Home, Archive, Info, and Appeal",
         "Community-driven comment system with like/dislike voting",
         "Automatic comment hiding (5 dislikes) with appeal process",
-        "Admin dashboard for content management",
+        "Admin dashboard for content management with delete functionality",
         "PDF export functionality for discussions",
+        "Automatic Excel export for all database data",
+        "PostgreSQL database with full CRUD operations",
         "Dark theme with modern, minimalistic design",
         "Visitor tracking and statistics",
         "Secure admin authentication system"
@@ -127,7 +129,8 @@ def generate_project_documentation():
         ['CSS Framework', 'Bootstrap 5'],
         ['Icons', 'Font Awesome 6'],
         ['PDF Generation', 'ReportLab'],
-        ['Database', 'SQLite (development) / PostgreSQL (production)'],
+        ['Excel Export', 'openpyxl, pandas'],
+        ['Database', 'PostgreSQL (production)'],
         ['Fonts', 'Vazirmatn (Persian), Google Fonts'],
         ['Server', 'Gunicorn WSGI server']
     ]
@@ -159,6 +162,8 @@ def generate_project_documentation():
     ├── forms.py              # WTForms form definitions
     ├── utils.py              # Utility functions
     ├── translations.py       # Internationalization support
+    ├── excel_manager.py      # Excel export functionality
+    ├── generate_documentation.py # PDF documentation generator
     ├── templates/            # Jinja2 templates
     │   ├── base.html        # Base template
     │   ├── home.html        # Home page template
@@ -176,6 +181,7 @@ def generate_project_documentation():
     │   │   └── main.js      # JavaScript functionality
     │   └── images/
     │       └── logo.jpg     # Project logo
+    ├── excel_exports/       # Excel export files directory
     ├── pyproject.toml       # Project dependencies
     └── replit.md           # Project documentation
     """
@@ -192,6 +198,7 @@ def generate_project_documentation():
         ('forms.py', 'Form Definitions'),
         ('utils.py', 'Utility Functions'),
         ('translations.py', 'Internationalization'),
+        ('excel_manager.py', 'Excel Export Manager'),
         ('templates/base.html', 'Base Template'),
         ('templates/home.html', 'Home Page Template'),
         ('templates/archive.html', 'Archive Page Template'),
