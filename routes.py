@@ -31,7 +31,7 @@ def inject_globals():
         'supported_languages': get_supported_languages()
     }
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     page = request.args.get('page', 1, type=int)
     per_page = 10
