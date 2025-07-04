@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: project-dard
+    env: python
+    buildCommand: ""
+    startCommand: python main.py
+    envVars:
+      - key: DATABASE_URL
+        value: your-database-url-if-using-postgresql
