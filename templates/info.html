@@ -8,7 +8,7 @@
         <h1 class="mb-4">
             <i class="fas fa-info-circle me-2"></i>{{ get_text('about_platform') }}
         </h1>
-        
+
         <!-- About Section -->
         <div class="card bg-secondary mb-4">
             <div class="card-body">
@@ -26,7 +26,7 @@
                 </p>
             </div>
         </div>
-        
+
         <!-- Founder Section -->
         <div class="row mb-4">
             <div class="col-lg-6">
@@ -39,24 +39,29 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 text-center mb-3">
+                                {% if founder and founder.photo_filename %}
+                                <img src="{{ url_for('static', filename='uploads/' + founder.photo_filename) }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px;">
+                                {% else %}
                                 <div class="profile-image-placeholder bg-primary rounded-circle mx-auto" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-user fa-3x text-white"></i>
                                 </div>
+                                {% endif %}
                             </div>
                             <div class="col-md-8">
-                                <h5>Dr. [Founder Name]</h5>
+                                {% if founder %}
+                                <h5>{{ founder.name }}</h5>
                                 <p class="text-muted">Founder & Visionary</p>
-                                <p>
-                                    [Founder bio would go here. This section would contain information about the 
-                                    founder's background, education, and vision for the platform.]
-                                </p>
+                                <p>{{ founder.bio }}</p>
+                                {% else %}
+                                <p class="text-muted">Founder info not available.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Featured Author -->
+
+            <!-- Featured Author Section -->
             <div class="col-lg-6">
                 <div class="card bg-secondary h-100">
                     <div class="card-header">
@@ -67,24 +72,29 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 text-center mb-3">
+                                {% if featured_author and featured_author.photo_filename %}
+                                <img src="{{ url_for('static', filename='uploads/' + featured_author.photo_filename) }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px;">
+                                {% else %}
                                 <div class="profile-image-placeholder bg-warning rounded-circle mx-auto" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-pen fa-3x text-white"></i>
                                 </div>
+                                {% endif %}
                             </div>
                             <div class="col-md-8">
-                                <h5>[Featured Author Name]</h5>
+                                {% if featured_author %}
+                                <h5>{{ featured_author.name }}</h5>
                                 <p class="text-muted">This Week's Featured Author</p>
-                                <p>
-                                    [Featured author bio would go here. This section would highlight the current 
-                                    week's featured author and their contributions.]
-                                </p>
+                                <p>{{ featured_author.bio }}</p>
+                                {% else %}
+                                <p class="text-muted">No featured author this week.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Team Section -->
         <div class="card bg-secondary mb-4">
             <div class="card-header">
@@ -94,31 +104,27 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    {% if team %}
+                    {% for member in team %}
                     <div class="col-md-4 text-center mb-3">
+                        {% if member.photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + member.photo_filename) }}" class="rounded-circle mb-2" style="width: 80px; height: 80px;">
+                        {% else %}
                         <div class="profile-image-placeholder bg-info rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-user fa-2x text-white"></i>
                         </div>
-                        <h6>[Team Member 1]</h6>
-                        <p class="text-muted small">Community Manager</p>
+                        {% endif %}
+                        <h6>{{ member.name }}</h6>
+                        <p class="text-muted small">{{ member.role }}</p>
                     </div>
-                    <div class="col-md-4 text-center mb-3">
-                        <div class="profile-image-placeholder bg-success rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user fa-2x text-white"></i>
-                        </div>
-                        <h6>[Team Member 2]</h6>
-                        <p class="text-muted small">Content Moderator</p>
-                    </div>
-                    <div class="col-md-4 text-center mb-3">
-                        <div class="profile-image-placeholder bg-danger rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user fa-2x text-white"></i>
-                        </div>
-                        <h6>[Team Member 3]</h6>
-                        <p class="text-muted small">Technical Lead</p>
-                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted">No team members added yet.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
+
         <!-- Platform Features -->
         <div class="card bg-secondary">
             <div class="card-header">
@@ -131,20 +137,20 @@
                     <div class="col-md-6">
                         <h6><i class="fas fa-globe me-2"></i>Multi-language Support</h6>
                         <p class="small text-muted">Support for English and Persian languages with RTL text support.</p>
-                        
+
                         <h6><i class="fas fa-comments me-2"></i>Community Discussions</h6>
                         <p class="small text-muted">Weekly topics and open discussions with community engagement.</p>
-                        
+
                         <h6><i class="fas fa-thumbs-up me-2"></i>Democratic Moderation</h6>
                         <p class="small text-muted">Community-driven content moderation through likes and dislikes.</p>
                     </div>
                     <div class="col-md-6">
                         <h6><i class="fas fa-archive me-2"></i>Discussion Archive</h6>
                         <p class="small text-muted">Complete archive of past discussions with PDF download capability.</p>
-                        
+
                         <h6><i class="fas fa-gavel me-2"></i>Appeal Process</h6>
                         <p class="small text-muted">Fair appeal system for content moderation decisions.</p>
-                        
+
                         <h6><i class="fas fa-book me-2"></i>Weekly Stories</h6>
                         <p class="small text-muted">Featured stories and content from community members.</p>
                     </div>

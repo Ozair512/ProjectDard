@@ -1,0 +1,108 @@
+{% extends "admin/dashboard.html" %}
+
+{% block content %}
+<h2 class="mb-4">Manage Info Page</h2>
+
+<!-- Founder Section -->
+<div class="card bg-secondary mb-4">
+    <div class="card-header"><strong>Founder Info</strong></div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {{ founder_form.hidden_tag() }}
+            <div class="mb-3">
+                {{ founder_form.name.label(class="form-label") }}
+                {{ founder_form.name(class="form-control bg-dark text-light") }}
+            </div>
+            <div class="mb-3">
+                {{ founder_form.bio.label(class="form-label") }}
+                {{ founder_form.bio(class="form-control bg-dark text-light", rows="4") }}
+            </div>
+            <div class="mb-3">
+                {{ founder_form.photo.label(class="form-label") }}
+                {{ founder_form.photo(class="form-control") }}
+                {% if founder and founder.photo_filename %}
+                    <div class="mt-2">
+                        <img src="{{ url_for('static', filename='uploads/' + founder.photo_filename) }}" width="100" class="rounded">
+                    </div>
+                {% endif %}
+            </div>
+            {{ founder_form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+</div>
+
+<!-- Featured Author Section -->
+<div class="card bg-secondary mb-4">
+    <div class="card-header"><strong>Featured Author</strong></div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {{ featured_form.hidden_tag() }}
+            <div class="mb-3">
+                {{ featured_form.name.label(class="form-label") }}
+                {{ featured_form.name(class="form-control bg-dark text-light") }}
+            </div>
+            <div class="mb-3">
+                {{ featured_form.bio.label(class="form-label") }}
+                {{ featured_form.bio(class="form-control bg-dark text-light", rows="4") }}
+            </div>
+            <div class="mb-3">
+                {{ featured_form.photo.label(class="form-label") }}
+                {{ featured_form.photo(class="form-control") }}
+                {% if featured_author and featured_author.photo_filename %}
+                    <div class="mt-2">
+                        <img src="{{ url_for('static', filename='uploads/' + featured_author.photo_filename) }}" width="100" class="rounded">
+                    </div>
+                {% endif %}
+            </div>
+            {{ featured_form.submit(class="btn btn-success") }}
+        </form>
+    </div>
+</div>
+
+<!-- Team Members Section -->
+<div class="card bg-secondary mb-4">
+    <div class="card-header"><strong>Add Team Member</strong></div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {{ team_form.hidden_tag() }}
+            <div class="mb-3">
+                {{ team_form.name.label(class="form-label") }}
+                {{ team_form.name(class="form-control bg-dark text-light") }}
+            </div>
+            <div class="mb-3">
+                {{ team_form.role.label(class="form-label") }}
+                {{ team_form.role(class="form-control bg-dark text-light") }}
+            </div>
+            <div class="mb-3">
+                {{ team_form.photo.label(class="form-label") }}
+                {{ team_form.photo(class="form-control") }}
+            </div>
+            {{ team_form.submit(class="btn btn-warning") }}
+        </form>
+    </div>
+</div>
+
+<!-- Team Members List -->
+<div class="card bg-secondary">
+    <div class="card-header"><strong>Existing Team Members</strong></div>
+    <div class="card-body">
+        {% if team_members %}
+            <div class="row">
+                {% for member in team_members %}
+                <div class="col-md-4 text-center mb-4">
+                    {% if member.photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + member.photo_filename) }}" width="80" height="80" class="rounded-circle mb-2">
+                    {% else %}
+                        <i class="fas fa-user fa-3x text-muted mb-2"></i>
+                    {% endif %}
+                    <h6>{{ member.name }}</h6>
+                    <p class="text-muted">{{ member.role }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No team members added yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

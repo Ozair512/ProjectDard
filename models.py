@@ -74,3 +74,22 @@ class Visitor(db.Model):
     user_agent = db.Column(db.Text)
     page_visited = db.Column(db.String(100))
     visited_at = db.Column(db.DateTime, default=datetime.utcnow)
+class Founder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    bio = db.Column(db.Text)
+    photo_filename = db.Column(db.String(255))
+
+
+class TeamMember(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(100), nullable=False)
+    photo_filename = db.Column(db.String(255))
+
+
+class FeaturedAuthor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    bio = db.Column(db.Text)
+    photo_filename = db.Column(db.String(255))

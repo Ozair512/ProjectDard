@@ -179,7 +179,13 @@ def download_discussion(topic_id):
 
 @app.route('/info')
 def info():
-    return render_template('info.html')
+    from models import Founder, TeamMember, FeaturedAuthor
+
+    founder = Founder.query.first()
+    featured_author = FeaturedAuthor.query.first()
+    team = TeamMember.query.all()
+
+    return render_template('info.html', founder=founder, featured_author=featured_author, team=team)
 
 @app.route('/appeal', methods=['GET', 'POST'])
 def appeal():
@@ -331,6 +337,75 @@ def admin_post_story():
     
     return render_template('admin/dashboard.html', story_form=form)
 
+from werkzeug.utils import secure_filename
+
+@app.route('/admin/manage-info', methods=['GET', 'POST'])
+@login_required
+def admin_manage_info():
+    from models import Founder, TeamMember, FeaturedAuthor
+    from forms import FounderForm, TeamMemberForm, FeaturedAuthorForm
+
+    founder = Founder.query.first()
+    featured_author = FeaturedAuthor.query.first()
+    team_members = TeamMember.query.all()
+
+    founder_form = FounderForm(obj=founder)
+    featured_form = FeaturedAuthorForm(obj=featured_author)
+    team_form = TeamMemberForm()
+
+    if founder_form.submit.data and founder_form.validate_on_submit():
+        if not founder:
+            founder = Founder()
+        founder.name = founder_form.name.data
+        founder.bio = founder_form.bio.data
+        file = founder_form.photo.data
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            founder.photo_filename = filename
+        db.session.add(founder)
+        db.session.commit()
+        flash("Founder info updated", "success")
+        return redirect(url_for('admin_manage_info'))
+
+    if featured_form.submit.data and featured_form.validate_on_submit():
+        if not featured_author:
+            featured_author = FeaturedAuthor()
+        featured_author.name = featured_form.name.data
+        featured_author.bio = featured_form.bio.data
+        file = featured_form.photo.data
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            featured_author.photo_filename = filename
+        db.session.add(featured_author)
+        db.session.commit()
+        flash("Featured Author updated", "success")
+        return redirect(url_for('admin_manage_info'))
+
+    if team_form.submit.data and team_form.validate_on_submit():
+        member = TeamMember(
+            name=team_form.name.data,
+            role=team_form.role.data
+        )
+        file = team_form.photo.data
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            member.photo_filename = filename
+        db.session.add(member)
+        db.session.commit()
+        flash("New team member added", "success")
+        return redirect(url_for('admin_manage_info'))
+
+    return render_template('admin/manage_info.html',
+                           founder_form=founder_form,
+                           featured_form=featured_form,
+                           team_form=team_form,
+                           team_members=team_members,
+                           founder=founder,
+                           featured_author=featured_author)
+
 @app.route('/admin/comments')
 @login_required
 def admin_comments():
@@ -463,3 +538,8 @@ def export_excel():
         flash(f'Error exporting Excel files: {str(e)}', 'danger')
     
     return redirect(url_for('admin_dashboard'))
+@app.route('/init_db')
+def init_db():
+    from main import db  # Replace 'yourapp' with your app's name if needed
+    db.create_all()
+    return "Database initialized!"

@@ -36,3 +36,27 @@ class AppealForm(FlaskForm):
     appellant_email = StringField('Your Email', validators=[DataRequired(), Email()])
     reason = TextAreaField('Reason for Appeal', validators=[DataRequired(), Length(min=20, max=1000)])
     submit = SubmitField('Submit Appeal')
+
+from flask_wtf.file import FileField
+from wtforms.validators import Optional
+from werkzeug.utils import secure_filename
+
+class FounderForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    bio = TextAreaField('Bio', validators=[Optional()])
+    photo = FileField('Photo', validators=[Optional()])
+    submit = SubmitField('Save')
+
+
+class TeamMemberForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    role = StringField('Role', validators=[DataRequired()])
+    photo = FileField('Photo', validators=[Optional()])
+    submit = SubmitField('Save')
+
+
+class FeaturedAuthorForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    bio = TextAreaField('Bio', validators=[Optional()])
+    photo = FileField('Photo', validators=[Optional()])
+    submit = SubmitField('Save')
