@@ -538,8 +538,8 @@ def export_excel():
         flash(f'Error exporting Excel files: {str(e)}', 'danger')
     
     return redirect(url_for('admin_dashboard'))
-@app.route('/init_db')
-def init_db():
-    from app import db  # Replace 'yourapp' with your app's name if needed
-    db.create_all()
-    return "Database initialized!"
+# @app.route('/init_db')
+# def init_db():
+#     from app import db
+#     db.create_all()
+#     return "Database initialized!"
