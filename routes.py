@@ -543,3 +543,8 @@ def export_excel():
 #     from app import db
 #     db.create_all()
 #     return "Database initialized!"
+from flask import send_from_directory
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(app.root_path, 'sitemap.xml')
